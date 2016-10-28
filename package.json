@@ -1,0 +1,23 @@
+{
+  "name": "promise-wait",
+  "version": "0.1.0",
+  "description": "A simpler way to create promise on NodeJS API.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codable/promise-wait.git"
+  },
+  "keywords": [
+    "Promise",
+    "Node.JS"
+  ],
+  "author": "High Wall",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/codable/promise-wait/issues"
+  },
+  "homepage": "https://github.com/codable/promise-wait#readme"
+}
