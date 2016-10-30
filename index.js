@@ -17,7 +17,7 @@ function ProxyApplyHandler(that) {
 ProxyApplyHandler.prototype.apply = function(func, obj, argumentsList) {
   return new Promise((resolve, reject) => {
     if (this.that.on && this.that.on === func) {
-      this.that.on('error', function(err) {
+      this.that.once('error', function(err) {
         reject(err);
       });
     }
