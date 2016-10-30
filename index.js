@@ -1,26 +1,36 @@
+'use strict';
+
 let proxyGetHandler = {
   get: function(that, property) {
     let p = that[property];
     if (!(p instanceof Function)) return p;
 
-    return new Proxy(p, proxyApplyHandler);
+    return new Proxy(p, new ProxyApplyHandler(that));
   }
 };
 
-let proxyApplyHandler = {
-  apply: function(func, obj, argumentsList) {
-    return new Promise(function(resolve, reject) {
-      argumentsList.push(function nodeHandler(err, value) {
-        if (err) reject(err);
-        else resolve(value);
+function ProxyApplyHandler(that) {
+  this.that = that;
+  this.rejected = false;
+}
+
+ProxyApplyHandler.prototype.apply = function(func, obj, argumentsList) {
+  return new Promise((resolve, reject) => {
+    if (this.that.on && this.that.on === func) {
+      this.that.on('error', function(err) {
+        reject(err);
       });
-      func.apply(obj, argumentsList);
+    }
+    argumentsList.push(function nodeHandler(err, value) {
+      if (err) reject(err);
+      else resolve(value);
     });
-  }
+    func.apply(this.that, argumentsList);
+  });
 };
 
-Promise.wait = function(that) {
+Promise.from = function(that) {
   return new Proxy(that, proxyGetHandler);
 };
 
-module.exports = Promise.wait;
+module.exports = Promise.from;
