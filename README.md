@@ -18,7 +18,9 @@ const fs = require('fs');
 const promiseFrom = require('promise-from');
 
 promiseFrom(fs.createWriteStream('hello'))
-.end('hello, promise')
+.expect('open')
+.write('hello')
+.write('promise')
 .then(function() {
   console.log('This is good promise');
 })
