@@ -1,6 +1,6 @@
 {
   "name": "promise-from",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A simpler way to create promise on NodeJS API.",
   "main": "index.js",
   "scripts": {
