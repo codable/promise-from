@@ -15,9 +15,9 @@ Usage
 
 ```Node.JS
 const fs = require('fs');
-const promiseWait = require('promise-wait');
+const promiseFrom = require('promise-wait');
 
-Promise.wait(fs.createWriteStream('hello'))
+promiseFrom(fs.createWriteStream('hello'))
 .end('hello, promise')
 .then(function() {
   console.log('This is good promise');
