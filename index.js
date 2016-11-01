@@ -1,5 +1,7 @@
 'use strict';
 
+require('./finally');
+
 function toPromise(value) {
   if (value && value.then) return value;
   return Promise.resolve(value);
@@ -56,6 +58,12 @@ let proxyGetHandler = {
           return new Promise(function(resolve, reject) {
             startPromise(that, resolve, reject);
           }).catch(onReject);
+        };
+      } else if (property === 'finally') {
+        return function(onFinally) {
+          new Promise(function(resolve, reject) {
+            startPromise(that, resolve, reject);
+          }).then(onFinally, onFinally);
         };
       } else if (property === 'expect') {
         p = expect;

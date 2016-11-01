@@ -70,4 +70,33 @@ describe('promise-from', function() {
       });
     });
   });
+
+  describe('finally', function() {
+    const dns = require('dns');
+    it('should always be called if promise resolved', function(done) {
+      var resolved = false;
+      Promise.from(dns).resolve('google.com').then(function(ans) {
+        resolved = true;
+      }).finally(function() {
+        assert.ok(resolved);
+        done();
+      });;
+    });
+
+    it('should always be called if promise rejected', function(done) {
+      var rejected = false;
+      Promise.from(dns).resolve('=.com').catch(function(ans) {
+        rejected = true;
+      }).finally(function() {
+        assert.ok(rejected);
+        done();
+      });;
+    });
+
+    it('should be able to start pending operations', function(done) {
+      Promise.from(dns).resolve('=.com').finally(function() {
+        done();
+      });;
+    });
+  });
 });
