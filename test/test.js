@@ -98,5 +98,14 @@ describe('promise-from', function() {
         done();
       });;
     });
+
+    it('should be able to chain after finally', function(done) {
+      Promise.from(dns).resolve('=.com').finally(function() {
+        return true
+      }).then(function(ok) {
+        assert(ok);
+        done();
+      });
+    });
   });
 });

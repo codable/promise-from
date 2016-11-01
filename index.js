@@ -61,7 +61,7 @@ let proxyGetHandler = {
         };
       } else if (property === 'finally') {
         return function(onFinally) {
-          new Promise(function(resolve, reject) {
+          return new Promise(function(resolve, reject) {
             startPromise(that, resolve, reject);
           }).then(onFinally, onFinally);
         };
