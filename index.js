@@ -24,6 +24,11 @@ function startPromise(that, resolve, reject, result) {
   func.apply(that, argumentsList);
 }
 
+function chain(func, cb) {
+  func();
+  cb();
+}
+
 function expect(good, bad, cb) {
   cb = cb || bad;
   bad = ((bad instanceof Function) ? 'error' : bad);
@@ -67,6 +72,8 @@ let proxyGetHandler = {
         };
       } else if (property === 'expect') {
         p = expect;
+      } else if (property === 'chain') {
+        p = chain;
       } else {
         return undefined;
       }

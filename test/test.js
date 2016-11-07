@@ -33,7 +33,7 @@ describe('promise-from', function() {
     });
 
     it('should be able to call chainable', function() {
-      var filename = 'abc.abc';
+      var filename = 'test.out';
       return Promise.from(fs.createWriteStream(filename))
       .write('good')
       .write('good')
@@ -50,7 +50,8 @@ describe('promise-from', function() {
     });
 
     it('should be able to expect events', function() {
-      return Promise.from(fs.createWriteStream('abc.abc'))
+      var filename = 'test.out';
+      return Promise.from(fs.createWriteStream(filename))
       .expect('open')
       .write('good')
       .end('bad')
@@ -105,6 +106,21 @@ describe('promise-from', function() {
       }).then(function(ok) {
         assert(ok);
         done();
+      });
+    });
+  });
+
+  describe('chain', function() {
+    const dns = require('dns');
+    it('should be able to chain some synchronous operations', function(done) {
+      let chained = false;
+      Promise.from(dns).resolve('google.com').chain(function() {
+        chained = true;
+      }).then(function(ans) {
+        assert.ok(chained);
+        done();
+      }).catch(function(err) {
+        done(err);
       });
     });
   });
