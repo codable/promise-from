@@ -29,6 +29,13 @@ const promiseFrom = require('promise-from');
 promiseFrom(fs.createWriteStream('hello'))
 .expect('open')
 .write('hello')
+.chain(function() {
+  console.info('this will be called and chained');
+})
+.chain(function(done) {
+  console.info('this will be called and will continue to then() after done() is called');
+  setTimeout(done, 1000);
+})
 .write('promise')
 .then(function() {
   console.log('all operations are successful.');

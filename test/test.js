@@ -123,5 +123,32 @@ describe('promise-from', function() {
         done(err);
       });
     });
+
+    it('should be able to chain asynchronous operations', function(done) {
+      let chained = false;
+      this.timeout(3000);
+      Promise.from(dns).resolve('google.com').chain(function(done) {
+        setTimeout(function() {
+          chained = true;
+          done();
+        }, 1000);
+      }).then(function(ans) {
+        assert.ok(chained);
+        done();
+      }).catch(function(err) {
+        done(err);
+      });
+    });
+
+    it('should be able to catch chain operations errors', function(done) {
+      Promise.from(dns).resolve('google.com').chain(function() {
+        throw new Error('Something wrong');
+      }).then(function(ans) {
+        done(new Error('error expected'));
+      }).catch(function(err) {
+        assert.ok(err instanceof Error);
+        done();
+      });
+    });
   });
 });

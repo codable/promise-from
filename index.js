@@ -25,8 +25,15 @@ function startPromise(that, resolve, reject, result) {
 }
 
 function chain(func, cb) {
-  func();
-  cb();
+  let err = null;
+  let value = null;
+  try {
+    value = func(cb);
+  } catch (e) {
+    err = e;
+  }
+  if (func.length === 0)
+    cb(err, value);
 }
 
 function expect(good, bad, cb) {
