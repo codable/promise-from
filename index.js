@@ -8,8 +8,9 @@ function toPromise(value) {
 }
 
 function startPromise(that, resolve, reject, result) {
-  let calls = that.__promiseCalls || [];
+  let calls = that.__promiseCalls;
   if (calls.length === 0) {
+    that.__promiseCalls = [];
     result = resolve(result);
     return toPromise(result);
   }
@@ -18,7 +19,10 @@ function startPromise(that, resolve, reject, result) {
   let func = call[0];
   let argumentsList = call[1];
   argumentsList.push(function nodeHandler(err, value) {
-    if (err) return toPromise((reject || Promise.reject)(err));
+    if (err) {
+      that.__promiseCalls = [];
+      return toPromise((reject || Promise.reject)(err));
+    }
     startPromise(that, resolve, reject, value);
   });
   func.apply(that, argumentsList);
@@ -88,23 +92,22 @@ let proxyGetHandler = {
 
     if (!(p instanceof Function)) return p;
 
-    that.__proxyApplyHandler = that.__proxyApplyHandler || new ProxyApplyHandler(that);
-    return new Proxy(p, that.__proxyApplyHandler);
+    return new Proxy(p, that.__promiseApplyHandler);
   }
 }
 
 function ProxyApplyHandler(that) {
   this.that = that;
-  this.rejected = false;
 }
 
 ProxyApplyHandler.prototype.apply = function(func, obj, argumentsList) {
-  this.that.__promiseCalls = this.that.__promiseCalls || [];
   this.that.__promiseCalls.push([func, argumentsList]);
   return obj;
 };
 
 Promise.from = function(that) {
+  that.__promiseCalls = [];
+  that.__promiseApplyHandler = new ProxyApplyHandler(that);
   return new Proxy(that, proxyGetHandler);
 };
 
